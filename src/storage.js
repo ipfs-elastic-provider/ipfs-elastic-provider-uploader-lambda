@@ -1,8 +1,8 @@
 'use strict'
 
-const { S3Client, HeadObjectCommand } = require('@aws-sdk/client-s3')
+const { S3Client, HeadObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3')
 const { NodeHttpHandler } = require('@aws-sdk/node-http-handler')
-const { createPresignedPost } = require('@aws-sdk/s3-presigned-post')
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
 const { Agent } = require('https')
 const { logger, serializeError } = require('./logging')
 
@@ -28,9 +28,9 @@ async function isFileExisting(bucket, key) {
 
 async function prepareUpload(bucket, key) {
   try {
-    return await createPresignedPost(s3Client, { Bucket: bucket, Key: key })
+    return await getSignedUrl(s3Client, new PutObjectCommand({ Bucket: bucket, Key: key }), { expiresIn: 3600 })
   } catch (e) {
-    logger.error(`Cannot check if ${key} already exists in bucket ${bucket}: ${serializeError(e)}`)
+    logger.error(`Cannot prepare file ${key} for upload in bucket ${bucket}: ${serializeError(e)}`)
     throw e
   }
 }

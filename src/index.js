@@ -28,7 +28,7 @@ async function main({ path: key }) {
   }
 
   try {
-    const response = await prepareUpload(bucket, key)
+    const response = { url: await prepareUpload(bucket, key) }
 
     logger.debug({ elapsed: elapsed(start), path: key, statusCode: 200, response }, `Prepared upload for file ${key}.`)
 
