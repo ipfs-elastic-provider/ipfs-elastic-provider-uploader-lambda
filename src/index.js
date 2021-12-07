@@ -1,6 +1,5 @@
 'use strict'
 
-const { ConflictError } = require('http-errors-enhanced')
 const { bucket } = require('./config')
 const { logger, elapsed, serializeError } = require('./logging')
 const { isFileExisting, prepareUpload } = require('./storage')
@@ -13,10 +12,10 @@ async function main({ path: key }) {
   }
 
   if (await isFileExisting(bucket, key)) {
-    const response = new ConflictError('Please use a different file name.')
+    const response = { statusCode: 409, error: 'Conflict', message: 'Please use a different file name.' }
 
     logger.debug(
-      { elapsed: elapsed(start), path: key, statusCode: response.statusCode, response: response.serialize() },
+      { elapsed: elapsed(start), path: key, statusCode: response.statusCode, response },
       `Rejected file ${key} as it has already been uploaded.`
     )
 
@@ -24,20 +23,20 @@ async function main({ path: key }) {
       isBase64Encoded: false,
       statusCode: 409,
       headers: {},
-      body: response
+      body: JSON.stringify(response)
     }
   }
 
   try {
     const response = await prepareUpload(bucket, key)
 
-    logger.debug({ elapsed: elapsed(start), path: key, statusCode: 200, response }, `Prepared upload for file ${key}`)
+    logger.debug({ elapsed: elapsed(start), path: key, statusCode: 200, response }, `Prepared upload for file ${key}.`)
 
     return {
       isBase64Encoded: false,
-      statusCode: 'number',
+      statusCode: 202,
       headers: {},
-      body: response
+      body: JSON.stringify(response)
     }
   } catch (e) {
     logger.error(`Cannot prepare upload for path ${key}: ${serializeError(e)}`)
