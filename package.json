@@ -1,0 +1,36 @@
+{
+  "name": "aws-ipfs-uploader-labmda",
+  "version": "0.1.0",
+  "description": "AWS IPFS uploader Lambda",
+  "homepage": "https://github.com/web3-storage/aws-ipfs-uploader-lambda",
+  "repository": "github:web3-storage/aws-ipfs-uploader-lambda",
+  "author": "Paolo Insogna <paolo.insogna@nearform.com>",
+  "license": "(Apache-2.0 AND MIT)",
+  "private": true,
+  "scripts": {
+    "format": "prettier -w src",
+    "lint": "eslint src",
+    "build": "bash scripts/build.sh",
+    "deploy": "aws lambda update-function-code --cli-connect-timeout 15000 --region $AWS_REGION --function-name $LAMBDA --zip-file fileb://dist/lambda.zip",
+    "invoke": "aws lambda invoke --cli-binary-format raw-in-base64-out --region $AWS_REGION --function-name $LAMBDA --payload file://event.json --log-type Tail /dev/null | jq -r .LogResult | base64 -d"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.41.0",
+    "@aws-sdk/s3-presigned-post": "^3.44.0",
+    "dotenv": "^10.0.0",
+    "http-errors-enhanced": "^0.7.0",
+    "pino": "^7.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.1",
+    "pino-pretty": "^7.2.0",
+    "prettier": "^2.4.1"
+  },
+  "engines": {
+    "node": ">=14.15.0"
+  }
+}
