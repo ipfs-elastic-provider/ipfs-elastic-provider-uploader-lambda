@@ -4,7 +4,8 @@ const { bucket } = require('./config')
 const { logger, elapsed, serializeError } = require('./logging')
 const { isFileExisting, prepareUpload } = require('./storage')
 
-async function main({ path: key }) {
+async function main(event) {
+  let key = event.path || event.rawPath // Allow integration with API Gateway or Lambda Proxy
   const start = process.hrtime.bigint()
 
   if (key.startsWith('/')) {
