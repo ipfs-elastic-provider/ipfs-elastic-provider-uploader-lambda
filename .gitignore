@@ -1,4 +1,5 @@
 *.car
 cars
+coverage
 dist/
-event.json
+event*.json
