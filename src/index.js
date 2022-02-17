@@ -12,23 +12,23 @@ async function main(event) {
     key = key.slice(1)
   }
 
-  if (await isFileExisting(bucket, key)) {
-    const response = { statusCode: 409, error: 'Conflict', message: 'Please use a different file name.' }
-
-    logger.debug(
-      { elapsed: elapsed(start), path: key, statusCode: response.statusCode, response },
-      `Rejected file ${key} as it has already been uploaded.`
-    )
-
-    return {
-      isBase64Encoded: false,
-      statusCode: 409,
-      headers: {},
-      body: JSON.stringify(response)
-    }
-  }
-
   try {
+    if (await isFileExisting(bucket, key)) {
+      const response = { statusCode: 409, error: 'Conflict', message: 'Please use a different file name.' }
+
+      logger.debug(
+        { elapsed: elapsed(start), path: key, statusCode: response.statusCode, response },
+        `Rejected file ${key} as it has already been uploaded.`
+      )
+
+      return {
+        isBase64Encoded: false,
+        statusCode: 409,
+        headers: {},
+        body: JSON.stringify(response)
+      }
+    }
+
     const response = { url: await prepareUpload(bucket, key) }
 
     logger.debug({ elapsed: elapsed(start), path: key, statusCode: 200, response }, `Prepared upload for file ${key}.`)
