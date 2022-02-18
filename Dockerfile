@@ -48,8 +48,18 @@ COPY src /app
 # Stage two, final build
 FROM node:16-alpine as final
 WORKDIR /app
-COPY --from=base /app /app
-COPY --from=base /opt /opt
-COPY --from=base /usr/local /usr/local
+# Copy GLIBC data
+COPY --from=base /etc/ld.so.cache /etc/ld.so.cache
+COPY --from=base /etc/nsswitch.conf /etc/nsswitch.conf
+COPY --from=base /lib/ld-linux-x86-64.so.2 /lib/ld-linux-x86-64.so.2
+COPY --from=base /lib64/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2
 COPY --from=base /usr/glibc-compat /usr/glibc-compat
+# Copy Lambda Insights
+COPY --from=base /opt /opt
+# Copy Lambda Runtime
+COPY --from=base /usr/local /usr/local
+# Copy the app
+COPY --from=base /app /app
+
+# Setup the command
 CMD ["/usr/local/bin/aws-lambda-ric", "index.handler"]
