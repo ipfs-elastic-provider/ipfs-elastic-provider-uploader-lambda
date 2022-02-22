@@ -9,11 +9,11 @@ const metrics = {}
 
 // Create all the metrics
 meters.s3Meter = new MeterProvider({ exporter, interval: 100 }).getMeter('s3')
-metrics.s3Heads = meters.s3Meter.createCounter('s3-fetchs', { description: 'Heads on S3' })
+metrics.s3Heads = meters.s3Meter.createCounter('s3-heads', { description: 'Heads on S3' })
 metrics.s3HeadsDurations = meters.s3Meter.createCounter('s3-heads-durations', {
   description: 'Heads durations on S3'
 })
-metrics.s3Signs = meters.s3Meter.createCounter('s3-fetchs', { description: 'Signs on S3' })
+metrics.s3Signs = meters.s3Meter.createCounter('s3-signs', { description: 'Signs on S3' })
 metrics.s3SignsDurations = meters.s3Meter.createCounter('s3-signs-durations', {
   description: 'Signs durations on S3'
 })
