@@ -17,9 +17,7 @@ async function isFileExisting(bucket, key) {
   try {
     metrics.s3Heads.add(1)
 
-    const startTime = process.hrtime.bigint()
-    await s3Client.send(new HeadObjectCommand({ Bucket: bucket, Key: key }))
-    trackDuration(metrics.s3HeadsDurations, startTime)
+    await trackDuration(metrics.s3HeadsDurations, s3Client.send(new HeadObjectCommand({ Bucket: bucket, Key: key })))
     return true
   } catch (e) {
     if (e.name !== 'NotFound') {
@@ -35,11 +33,10 @@ async function prepareUpload(bucket, key) {
   try {
     metrics.s3Signs.add(1)
 
-    const startTime = process.hrtime.bigint()
-    const url = await getSignedUrl(s3Client, new PutObjectCommand({ Bucket: bucket, Key: key }), { expiresIn: 3600 })
-    trackDuration(metrics.s3SignsDurations, startTime)
-
-    return url
+    return await trackDuration(
+      metrics.s3SignsDurations,
+      getSignedUrl(s3Client, new PutObjectCommand({ Bucket: bucket, Key: key }), { expiresIn: 3600 })
+    )
   } catch (e) {
     logger.error(`Cannot prepare file ${key} for upload in bucket ${bucket}: ${serializeError(e)}`)
     throw e

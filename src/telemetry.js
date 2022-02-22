@@ -18,8 +18,14 @@ metrics.s3SignsDurations = meters.s3Meter.createCounter('s3-signs-durations', {
   description: 'Signs durations on S3'
 })
 
-function trackDuration(metric, startTime) {
-  metric.add(Number(process.hrtime.bigint() - startTime) / 1e6)
+async function trackDuration(metric, promise) {
+  const startTime = process.hrtime.bigint()
+
+  try {
+    return await promise
+  } finally {
+    metric.add(Number(process.hrtime.bigint() - startTime) / 1e6)
+  }
 }
 
 function storeMetrics() {
