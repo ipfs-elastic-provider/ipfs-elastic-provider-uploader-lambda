@@ -31,10 +31,10 @@ async function trackDuration(metric, promise) {
 function storeMetrics() {
   /* c8 ignore next 3 */
   if (!exporter._batcher.hasMetric) {
-    return '# no registered metrics'
-  } else {
-    return exporter._serializer.serialize(exporter._batcher.checkPointSet())
+    return
   }
+
+  return exporter._serializer.serialize(exporter._batcher.checkPointSet())
 }
 
 module.exports = {
