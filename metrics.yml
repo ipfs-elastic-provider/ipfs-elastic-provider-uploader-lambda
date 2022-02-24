@@ -1,0 +1,6 @@
+---
+component: uploader-lambda
+interval: 1000
+metrics:
+  s3-heads: AWS S3 HeadObject
+  s3-signs: AWS S3 PutObject Presigned URL Generation
