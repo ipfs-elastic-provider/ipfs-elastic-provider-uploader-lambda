@@ -5,7 +5,7 @@ const { NodeHttpHandler } = require('@aws-sdk/node-http-handler')
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
 const { Agent } = require('https')
 const { logger, serializeError } = require('./logging')
-const { metrics, trackDuration } = require('./telemetry')
+const telemetry = require('./telemetry')
 
 const agent = new Agent({ keepAlive: true, keepAliveMsecs: 60000 })
 
@@ -15,9 +15,9 @@ const s3Client = new S3Client({
 
 async function isFileExisting(bucket, key) {
   try {
-    metrics.s3Heads.add(1)
+    telemetry.increaseCount('s3-heads')
 
-    await trackDuration(metrics.s3HeadsDurations, s3Client.send(new HeadObjectCommand({ Bucket: bucket, Key: key })))
+    await telemetry.trackDuration('s3-heads', s3Client.send(new HeadObjectCommand({ Bucket: bucket, Key: key })))
     return true
   } catch (e) {
     if (e.name !== 'NotFound') {
@@ -31,10 +31,10 @@ async function isFileExisting(bucket, key) {
 
 async function prepareUpload(bucket, key) {
   try {
-    metrics.s3Signs.add(1)
+    telemetry.increaseCount('s3-signs')
 
-    return await trackDuration(
-      metrics.s3SignsDurations,
+    return await telemetry.trackDuration(
+      's3-signs',
       getSignedUrl(s3Client, new PutObjectCommand({ Bucket: bucket, Key: key }), { expiresIn: 3600 })
     )
   } catch (e) {
