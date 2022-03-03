@@ -46,7 +46,7 @@ async function main(event) {
     throw e
     /* c8 ignore next */
   } finally {
-    await telemetry.flush()
+    telemetry.flush()
   }
 }
 
