@@ -1,4 +1,4 @@
-# AWS IPFS Uploader Lambda
+# Elastic IPFS Uploader Lambda
 
 ## Deployment environment variables
 

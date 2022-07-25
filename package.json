@@ -1,9 +1,9 @@
 {
-  "name": "aws-ipfs-uploader-lambda",
+  "name": "uploader-lambda",
   "version": "0.1.0",
-  "description": "AWS IPFS uploader Lambda",
-  "homepage": "https://github.com/web3-storage/aws-ipfs-uploader-lambda",
-  "repository": "github:web3-storage/aws-ipfs-uploader-lambda",
+  "description": "Elastic IPFS uploader Lambda",
+  "homepage": "https://github.com/elastic-ipfs/uploader-lambda",
+  "repository": "github:web3-storage/uploader-lambda",
   "author": "Paolo Insogna <paolo.insogna@nearform.com>",
   "license": "(Apache-2.0 AND MIT)",
   "private": true,
